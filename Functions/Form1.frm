@@ -1,12 +1,13 @@
 VERSION 5.00
 Begin VB.Form Main 
    Caption         =   "主界面"
-   ClientHeight    =   4200
-   ClientLeft      =   4008
+   ClientHeight    =   4308
+   ClientLeft      =   4188
    ClientTop       =   2316
    ClientWidth     =   7272
    LinkTopic       =   "Main"
-   ScaleHeight     =   4200
+   MouseIcon       =   "Form1.frx":0000
+   ScaleHeight     =   4308
    ScaleWidth      =   7272
    Begin VB.CommandButton Command3 
       Caption         =   "退出"
@@ -22,7 +23,7 @@ Begin VB.Form Main
       Height          =   492
       Left            =   5400
       TabIndex        =   3
-      Top             =   2640
+      Top             =   3240
       Width           =   1452
    End
    Begin VB.CommandButton Command2 
@@ -39,7 +40,7 @@ Begin VB.Form Main
       Height          =   492
       Left            =   5400
       TabIndex        =   2
-      Top             =   1440
+      Top             =   1680
       Width           =   1452
    End
    Begin VB.CommandButton Command1 
@@ -56,7 +57,7 @@ Begin VB.Form Main
       Height          =   492
       Left            =   5400
       TabIndex        =   1
-      Top             =   240
+      Top             =   120
       Width           =   1452
    End
    Begin VB.PictureBox Picture1 
@@ -68,28 +69,48 @@ Begin VB.Form Main
       Top             =   120
       Width           =   4956
    End
+   Begin VB.Label Label1 
+      Caption         =   "X:     Y:"
+      BeginProperty Font 
+         Name            =   "黑体"
+         Size            =   12
+         Charset         =   134
+         Weight          =   400
+         Underline       =   0   'False
+         Italic          =   0   'False
+         Strikethrough   =   0   'False
+      EndProperty
+      Height          =   252
+      Left            =   120
+      TabIndex        =   4
+      Top             =   3840
+      Width           =   3012
+   End
 End
 Attribute VB_Name = "Main"
 Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
-Option Explicit
+
 Private Sub setInitial()
-X = Picture1.Width / 500
-y = Picture1.Height / 500
-Picture1.Scale (-X, y)-(X, -y)
-Picture1.Line (-X, 0)-(X, 0), vbBlack
-Picture1.Line (0, y)-(0, -y), vbBlack
+Picture1.Cls
+Module1.X = Picture1.Width / 600
+Module1.Y = Picture1.Height / 600
+Picture1.Scale (-Module1.X, Module1.Y)-(Module1.X, -Module1.Y)
+Picture1.Line (-Module1.X, 0)-(Module1.X, 0), vbBlack
+Picture1.Line (0, Module1.Y)-(0, -Module1.Y), vbBlack
 Dim j
-For j = -y To y
+For j = -Module1.Y To Module1.Y
 If j <> 0 Then
 Call setPaintPosition(-1, j): Picture1.Print j
+Picture1.DrawStyle = 2: Picture1.Line (-Module1.X, j)-(Module1.X, j), vbbalck: Picture1.DrawStyle = 0
 End If
 Next j
 Dim i
-For i = -X To X
+For i = -Module1.X To Module1.X
 Call setPaintPosition(i, 0): Picture1.Print i
+Picture1.DrawStyle = 2: Picture1.Line (i, Module1.Y)-(i, -Module1.Y), vbbalck: Picture1.DrawStyle = 0
 Next i
 End Sub
 
@@ -106,11 +127,12 @@ For j = 0 To (Module1.count - 1) Step 1
   expression = functions(j)
   color = functionsColor(j)
   If functionsEnable(j) Then
-    For i = -X To X Step 0.01
-    Dim y
-    y = Replace(expression, "x", i)
-    y = sctl.eval(y)
-    Picture1.PSet (i, y), color
+    For i = -Module1.X To Module1.X Step 0.005
+    Dim Y
+    Y = Replace(expression, "x", i)
+    On Error Resume Next
+    Y = sctl.eval(Y)
+    Picture1.PSet (i, Y), color
     Next i
   End If
 Next j
@@ -133,6 +155,15 @@ Unload Setting
 End Sub
 
 Private Sub Form_Resize()
+Command1.Left = Main.Width - Command1.Width - 4 * 120
+Command2.Left = Main.Width - Command2.Width - 4 * 120
+Command3.Left = Main.Width - Command3.Width - 4 * 120
+Picture1.Width = Command1.Left - 4 * 120
+Picture1.Height = Main.Height - 10 * 120
+Label1.Top = Picture1.Height + 120
+Command3.Top = Label1.Top - Command3.Height
+Command2.Top = (Command3.Top - Command1.Top) / 2
+
 Call setInitial
 End Sub
 
@@ -140,7 +171,14 @@ Private Sub Form1_Paint()
 Call setInitial
 End Sub
 
-Private Sub setPaintPosition(ByVal X As Single, ByVal y As Single)
-Picture1.CurrentX = X
-Picture1.CurrentY = y
+Private Sub setPaintPosition(ByVal xx As Single, ByVal yy As Single)
+Picture1.CurrentX = xx
+Picture1.CurrentY = yy
+End Sub
+
+Private Sub Picture1_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
+Dim sx, sy
+sx = Format(X, ".00")
+sy = Format(Y, ".00")
+Label1.Caption = "X:" & IIf(sx > -1 And sx < 1, Format(sx, "0.00"), sx) & "  Y:" & IIf(sy > -1 And sy < 1, Format(sy, "0.00"), sy)
 End Sub

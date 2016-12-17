@@ -3,13 +3,12 @@ Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "ComDlg32.OCX"
 Begin VB.Form Setting 
    Caption         =   "设置"
    ClientHeight    =   3036
-   ClientLeft      =   108
-   ClientTop       =   432
+   ClientLeft      =   5676
+   ClientTop       =   2880
    ClientWidth     =   5268
    LinkTopic       =   "Setting"
    ScaleHeight     =   3036
    ScaleWidth      =   5268
-   StartUpPosition =   3  '窗口缺省
    Begin VB.CheckBox Check1 
       Caption         =   "是否显示"
       Enabled         =   0   'False

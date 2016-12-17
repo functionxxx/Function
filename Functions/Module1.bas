@@ -2,7 +2,7 @@ Attribute VB_Name = "Module1"
 Option Explicit
 
 Public X As Integer
-Public y As Integer
+Public Y As Integer
 Public count As Integer
 Public functions() As String
 Public functionsColor() As String
