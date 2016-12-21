@@ -195,6 +195,8 @@ Private Sub Command2_Click()
 If Text1.Text <> "" And Text1.Text <> " " Then
 Call addFunctions(Text1.Text)
 Combo1.AddItem (Text1.Text)
+Combo1.Text = Text1.Text
+Call Combo1_Click
 Text1.Text = ""
 End If
 End Sub

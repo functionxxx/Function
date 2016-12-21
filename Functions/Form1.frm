@@ -9,6 +9,12 @@ Begin VB.Form Main
    MouseIcon       =   "Form1.frx":0000
    ScaleHeight     =   4308
    ScaleWidth      =   7272
+   Begin VB.Timer Timer1 
+      Enabled         =   0   'False
+      Interval        =   1000
+      Left            =   4800
+      Top             =   3840
+   End
    Begin VB.CommandButton Command3 
       Caption         =   "ÍË³ö"
       BeginProperty Font 
@@ -92,25 +98,38 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
+Public oldx As Single
+Public oldy As Single
+Public zt As Integer
 
-Private Sub setInitial()
+Private Sub setInitial(ByVal movex As Single, ByVal movey As Single)
 Picture1.Cls
-Module1.X = Picture1.Width / 600
-Module1.Y = Picture1.Height / 600
-Picture1.Scale (-Module1.X, Module1.Y)-(Module1.X, -Module1.Y)
-Picture1.Line (-Module1.X, 0)-(Module1.X, 0), vbBlack
-Picture1.Line (0, Module1.Y)-(0, -Module1.Y), vbBlack
+If movex = 0 And movey = 0 Then
+Data.x1 = -(Picture1.Width / 840)
+Data.y1 = (Picture1.Height / 840)
+Data.x2 = (Picture1.Width / 840)
+Data.y2 = -(Picture1.Height / 840)
+Else
+Data.x1 = Data.x1 + movex
+Data.x2 = Data.x2 + movex
+Data.y1 = Data.y1 + movey
+Data.y2 = Data.y2 + movey
+End If
+Picture1.Scale (Data.x1, Data.y1)-(Data.x2, Data.y2)
+Picture1.Line (Data.x1, 0)-(Data.x2, 0), vbBlack
+Picture1.Line (0, Data.y1)-(0, Data.y2), vbBlack
+
 Dim j
-For j = -Module1.Y To Module1.Y
+For j = Data.y2 To Data.y1
 If j <> 0 Then
 Call setPaintPosition(-1, j): Picture1.Print j
-Picture1.DrawStyle = 2: Picture1.Line (-Module1.X, j)-(Module1.X, j), vbbalck: Picture1.DrawStyle = 0
+Picture1.DrawStyle = 2: Picture1.Line (Data.x1, j)-(Data.x2, j), vbbalck: Picture1.DrawStyle = 0
 End If
 Next j
 Dim i
-For i = -Module1.X To Module1.X
+For i = Data.x1 To Data.x2
 Call setPaintPosition(i, 0): Picture1.Print i
-Picture1.DrawStyle = 2: Picture1.Line (i, Module1.Y)-(i, -Module1.Y), vbbalck: Picture1.DrawStyle = 0
+Picture1.DrawStyle = 2: Picture1.Line (i, Data.y1)-(i, Data.y2), vbbalck: Picture1.DrawStyle = 0
 Next i
 End Sub
 
@@ -121,13 +140,13 @@ sctl.Language = "VBScript"
 
 Dim i
 Dim j
-For j = 0 To (Module1.count - 1) Step 1
+For j = 0 To (Data.count - 1) Step 1
   Dim expression As String
   Dim color As String
   expression = functions(j)
   color = functionsColor(j)
-  If functionsEnable(j) Then
-    For i = -Module1.X To Module1.X Step 0.005
+  If functionsEnable(j) = 1 Then
+    For i = Data.x1 To Data.x2 Step 0.005
     Dim Y
     Y = Replace(expression, "x", i)
     On Error Resume Next
@@ -139,7 +158,7 @@ Next j
 End Sub
 
 Private Sub Command1_Click()
-If Setting.Combo1.ListIndex <> -1 Then
+If Data.count > 0 Then
 Call draw
 End If
 End Sub
@@ -155,6 +174,7 @@ Unload Setting
 End Sub
 
 Private Sub Form_Resize()
+If Me.WindowState <> 1 Then
 Command1.Left = Main.Width - Command1.Width - 4 * 120
 Command2.Left = Main.Width - Command2.Width - 4 * 120
 Command3.Left = Main.Width - Command3.Width - 4 * 120
@@ -164,11 +184,12 @@ Label1.Top = Picture1.Height + 120
 Command3.Top = Label1.Top - Command3.Height
 Command2.Top = (Command3.Top - Command1.Top) / 2
 
-Call setInitial
+Call setInitial(0, 0)
+End If
 End Sub
 
-Private Sub Form1_Paint()
-Call setInitial
+Private Sub Form_Paint()
+Call setInitial(0, 0)
 End Sub
 
 Private Sub setPaintPosition(ByVal xx As Single, ByVal yy As Single)
@@ -176,9 +197,18 @@ Picture1.CurrentX = xx
 Picture1.CurrentY = yy
 End Sub
 
+Private Sub Picture1_MouseDown(Button As Integer, Shift As Integer, X As Single, Y As Single)
+  oldx = X
+  oldy = Y
+End Sub
+
 Private Sub Picture1_MouseMove(Button As Integer, Shift As Integer, X As Single, Y As Single)
+If Button = 0 Then
 Dim sx, sy
 sx = Format(X, ".00")
 sy = Format(Y, ".00")
 Label1.Caption = "X:" & IIf(sx > -1 And sx < 1, Format(sx, "0.00"), sx) & "  Y:" & IIf(sy > -1 And sy < 1, Format(sy, "0.00"), sy)
+ElseIf Button = vbLeftButton Then
+    Call setInitial(-(X - oldx), -(Y - oldy))
+End If
 End Sub
