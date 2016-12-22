@@ -146,15 +146,16 @@ For j = 0 To (Data.count - 1) Step 1
   expression = functions(j)
   color = functionsColor(j)
   If functionsEnable(j) = 1 Then
-    For i = Data.x1 To Data.x2 Step 0.005
-    Dim Y
-    Y = Replace(expression, "x", i)
+    For i = Data.x1 To Data.x2 Step 0.0005
     On Error Resume Next
-    Y = sctl.eval(Y)
-    Picture1.PSet (i, Y), color
-    Next i
+    Picture1.PSet (i, sctl.eval(Replace(expression, "x", i))), color
+    DoEvents
+    Next
   End If
-Next j
+  DoEvents
+Next
+
+Set sctl = Nothing
 End Sub
 
 Private Sub Command1_Click()
