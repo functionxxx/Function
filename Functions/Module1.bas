@@ -23,24 +23,24 @@ End Sub
 Public Sub removeFunctions(ByVal aold As String)
 Dim index As Integer
 Dim i
-index = getIndex(aold)
+index = Data.getIndex(aold)
 For i = index To Data.count - 1
 functionsColor(i) = functionsColor(i + 1)
 functionsEnable(i) = functionsEnable(i + 1)
 functions(i) = functions(i + 1)
 Next i
 Data.count = Data.count - 1
-ReDim functionsColor(Data.count)
-ReDim functionsEnable(Data.count)
-ReDim functions(Data.count)
+ReDim Preserve functionsColor(Data.count)
+ReDim Preserve functionsEnable(Data.count)
+ReDim Preserve functions(Data.count)
 End Sub
 
 Public Sub setColor(ByVal expression As String, ByVal color As String)
-functionsColor(getIndex(expression)) = color
+functionsColor(Data.getIndex(expression)) = color
 End Sub
 
 Public Sub setEnable(ByVal expression As String, ByVal enable As Integer)
-functionsEnable(getIndex(expression)) = enable
+functionsEnable(Data.getIndex(expression)) = enable
 End Sub
 
 Public Function getIndex(ByVal arg As String) As Integer

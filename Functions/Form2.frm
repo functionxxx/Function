@@ -6,9 +6,19 @@ Begin VB.Form Setting
    ClientLeft      =   5676
    ClientTop       =   2880
    ClientWidth     =   5268
+   Icon            =   "Form2.frx":0000
    LinkTopic       =   "Setting"
    ScaleHeight     =   3036
    ScaleWidth      =   5268
+   Begin VB.CommandButton Command5 
+      Caption         =   "快捷键盘"
+      Height          =   372
+      Left            =   3840
+      MousePointer    =   1  'Arrow
+      TabIndex        =   9
+      Top             =   1440
+      Width           =   972
+   End
    Begin VB.CheckBox Check1 
       Caption         =   "是否显示"
       Enabled         =   0   'False
@@ -97,9 +107,9 @@ Begin VB.Form Setting
          Strikethrough   =   0   'False
       EndProperty
       Height          =   336
-      ItemData        =   "Form2.frx":0000
+      ItemData        =   "Form2.frx":048A
       Left            =   1200
-      List            =   "Form2.frx":0002
+      List            =   "Form2.frx":048C
       TabIndex        =   3
       Text            =   "选择"
       Top             =   120
@@ -172,9 +182,22 @@ Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 Option Explicit
 
+Private Function getIndex(str As String) As Integer
+Dim index As Integer
+index = -1
+Dim i As Integer
+For i = 0 To Combo1.ListCount - 1
+If Combo1.List(i) = str Then
+index = i
+Exit For
+End If
+Next
+getIndex = index
+End Function
+
 Private Sub Combo1_Click()
 Dim index As Integer
-index = getIndex(Combo1.Text)
+index = Data.getIndex(Combo1.Text)
 If index <> -1 Then
 Check1.Enabled = True
 Command4.Enabled = True
@@ -202,11 +225,11 @@ End If
 End Sub
 
 Private Sub Command3_Click()
-If Combo1.ListIndex >= 0 Then
+If getIndex(Combo1.Text) >= 0 Then
 Call removeFunctions(Combo1.Text)
-Combo1.RemoveItem (Combo1.ListIndex)
+Combo1.RemoveItem (getIndex(Combo1.Text))
 End If
-If Combo1.ListIndex = -1 Then
+If getIndex(Combo1.Text) = -1 Then
 Check1.Enabled = False
 Command4.Enabled = False
 End If
@@ -224,4 +247,8 @@ Private Sub check1_Click()
   Else
   Call setEnable(Combo1.Text, 0)
   End If
+End Sub
+
+Private Sub Command5_Click()
+Form3.Show
 End Sub

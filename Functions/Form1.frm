@@ -1,18 +1,28 @@
 VERSION 5.00
 Begin VB.Form Main 
    Caption         =   "Ö÷½çÃæ"
-   ClientHeight    =   4308
+   ClientHeight    =   4452
    ClientLeft      =   4188
    ClientTop       =   2316
    ClientWidth     =   7272
+   Icon            =   "Form1.frx":0000
    LinkTopic       =   "Main"
-   MouseIcon       =   "Form1.frx":0000
-   ScaleHeight     =   4308
+   MouseIcon       =   "Form1.frx":048A
+   ScaleHeight     =   4452
    ScaleWidth      =   7272
+   Begin VB.HScrollBar HScroll1 
+      Height          =   252
+      Left            =   3240
+      Max             =   20
+      TabIndex        =   5
+      Top             =   3840
+      Value           =   5
+      Width           =   1812
+   End
    Begin VB.Timer Timer1 
       Enabled         =   0   'False
       Interval        =   1000
-      Left            =   4800
+      Left            =   6840
       Top             =   3840
    End
    Begin VB.CommandButton Command3 
@@ -90,7 +100,7 @@ Begin VB.Form Main
       Left            =   120
       TabIndex        =   4
       Top             =   3840
-      Width           =   3012
+      Width           =   2292
    End
 End
 Attribute VB_Name = "Main"
@@ -101,14 +111,16 @@ Attribute VB_Exposed = False
 Public oldx As Single
 Public oldy As Single
 Public zt As Integer
+Public looking As Integer
 
 Private Sub setInitial(ByVal movex As Single, ByVal movey As Single)
 Picture1.Cls
+looking = 840 + (HScroll1.Value - 5) * 60
 If movex = 0 And movey = 0 Then
-Data.x1 = -(Picture1.Width / 840)
-Data.y1 = (Picture1.Height / 840)
-Data.x2 = (Picture1.Width / 840)
-Data.y2 = -(Picture1.Height / 840)
+Data.x1 = -(Picture1.Width / looking)
+Data.y1 = (Picture1.Height / looking)
+Data.x2 = (Picture1.Width / looking)
+Data.y2 = -(Picture1.Height / looking)
 Else
 Data.x1 = Data.x1 + movex
 Data.x2 = Data.x2 + movex
@@ -172,6 +184,11 @@ End Sub
 Private Sub Command3_Click()
 Unload Me
 Unload Setting
+Unload Form3
+End Sub
+
+Private Sub Form_Load()
+Shell "regsvr32.exe " & App.Path & "\comdlg32.ocx", vbHide
 End Sub
 
 Private Sub Form_Resize()
@@ -182,6 +199,9 @@ Command3.Left = Main.Width - Command3.Width - 4 * 120
 Picture1.Width = Command1.Left - 4 * 120
 Picture1.Height = Main.Height - 10 * 120
 Label1.Top = Picture1.Height + 120
+HScroll1.Width = Picture1.Width - Label1.Width
+HScroll1.Top = Picture1.Height + 120
+HScroll1.Left = Picture1.Width - HScroll1.Width
 Command3.Top = Label1.Top - Command3.Height
 Command2.Top = (Command3.Top - Command1.Top) / 2
 
@@ -196,6 +216,10 @@ End Sub
 Private Sub setPaintPosition(ByVal xx As Single, ByVal yy As Single)
 Picture1.CurrentX = xx
 Picture1.CurrentY = yy
+End Sub
+
+Private Sub HScroll1_Change()
+Call setInitial(0, 0)
 End Sub
 
 Private Sub Picture1_MouseDown(Button As Integer, Shift As Integer, X As Single, Y As Single)
