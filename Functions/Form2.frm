@@ -1,9 +1,9 @@
 VERSION 5.00
-Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "ComDlg32.OCX"
+Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "comdlg32.ocx"
 Begin VB.Form Setting 
    Caption         =   "…Ë÷√"
    ClientHeight    =   3036
-   ClientLeft      =   5676
+   ClientLeft      =   4188
    ClientTop       =   2880
    ClientWidth     =   5268
    Icon            =   "Form2.frx":0000
@@ -12,6 +12,15 @@ Begin VB.Form Setting
    ScaleWidth      =   5268
    Begin VB.CommandButton Command5 
       Caption         =   "øÏΩ›º¸≈Ã"
+      BeginProperty Font 
+         Name            =   "ÀŒÃÂ"
+         Size            =   9
+         Charset         =   134
+         Weight          =   700
+         Underline       =   0   'False
+         Italic          =   0   'False
+         Strikethrough   =   0   'False
+      EndProperty
       Height          =   372
       Left            =   3840
       MousePointer    =   1  'Arrow
@@ -128,7 +137,6 @@ Begin VB.Form Setting
       Height          =   372
       Left            =   1200
       TabIndex        =   2
-      Text            =   "0"
       Top             =   1440
       Width           =   2532
    End
@@ -210,6 +218,7 @@ End If
 End Sub
 
 Private Sub Command1_Click()
+Unload Form3
 Me.Hide
 Main.Show
 End Sub
