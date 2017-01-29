@@ -188,7 +188,7 @@ Unload Form3
 End Sub
 
 Private Sub Form_Load()
-Shell "regsvr32.exe " & App.Path & "\comdlg32.ocx", vbHide
+Shell "regsvr32.exe " & App.Path & "\comdlg32.OCX", vbHide
 End Sub
 
 Private Sub Form_Resize()
